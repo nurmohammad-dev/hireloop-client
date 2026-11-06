@@ -41,7 +41,7 @@ function ActionBar({ className }: { className?: string }) {
   return (
     <div className={cn("flex items-center gap-3", className)}>
       <Button
-        render={<Link href="/api/sign-in" />}
+        render={<Link href="/sign-in" />}
         nativeButton={false}
         size="lg"
         className="h-11 rounded-xl bg-white px-5 text-[17px] font-semibold text-brand hover:bg-white/90 dark:text-brand"
@@ -49,7 +49,7 @@ function ActionBar({ className }: { className?: string }) {
         Sign In
       </Button>
       <Button
-        render={<Link href="/api/sign-up" />}
+        render={<Link href="/sign-up" />}
         nativeButton={false}
         size="lg"
         className="h-11 rounded-xl bg-brand px-6 text-[17px] text-white shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] hover:bg-brand/90"
