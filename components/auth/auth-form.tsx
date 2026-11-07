@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -10,10 +11,21 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+export interface AuthFormValues {
+  name?: string
+  email: string
+  password: string
+}
+
+interface AuthFormProps {
+  mode: "signin" | "signup"
+  onSubmit: (values: AuthFormValues) => Promise<void>
+}
+
 function AuthTabs({ mode }: { mode: "signin" | "signup" }) {
   const tabs = [
-    { href: "/login", label: "Sign In", active: mode === "signin" },
-    { href: "/register", label: "Sign Up", active: mode === "signup" },
+    { href: "/sign-in", label: "Sign In", active: mode === "signin" },
+    { href: "/sign-up", label: "Sign Up", active: mode === "signup" },
   ] as const
 
   return (
@@ -45,16 +57,29 @@ function AuthTabs({ mode }: { mode: "signin" | "signup" }) {
 const inputClasses =
   "h-10 rounded-lg border-white/10 bg-[#0c0c0f] px-3 text-[15px] text-white focus-visible:border-brand/60 focus-visible:ring-brand/30 placeholder:text-white/40"
 
-export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
+export function AuthForm({ mode, onSubmit }: AuthFormProps) {
   const [showPassword, setShowPassword] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
+
   const isSignIn = mode === "signin"
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
     const formData = new FormData(event.currentTarget)
-    const data = Object.fromEntries(formData.entries())
-    // TODO: wire up to auth integration later
-    console.log(isSignIn ? "Sign in form data:" : "Sign up form data:", data)
+
+    const values: AuthFormValues = {
+      name: (formData.get("name") as string) || undefined,
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+    }
+
+    try {
+      setIsLoading(true)
+      await onSubmit(values)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -64,6 +89,7 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
       <h1 className="mt-6 text-center text-2xl font-bold tracking-tight text-foreground">
         {isSignIn ? "Welcome back" : "Create your account"}
       </h1>
+
       <p className="mt-1.5 text-center text-sm text-muted-foreground">
         {isSignIn
           ? "Sign in to continue your job hunt."
@@ -76,6 +102,7 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
             <Label htmlFor="name" className="text-foreground">
               Full name
             </Label>
+
             <Input
               id="name"
               name="name"
@@ -92,6 +119,7 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
           <Label htmlFor="email" className="text-foreground">
             Email
           </Label>
+
           <Input
             id="email"
             name="email"
@@ -108,15 +136,17 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
             <Label htmlFor="password" className="text-foreground">
               Password
             </Label>
+
             {isSignIn && (
               <Link
-                href="/login"
+                href="/forgot-password"
                 className="text-xs text-muted-foreground hover:text-brand"
               >
                 Forgot password?
               </Link>
             )}
           </div>
+
           <div className="relative">
             <Input
               id="password"
@@ -128,17 +158,25 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
               autoComplete={isSignIn ? "current-password" : "new-password"}
               className={cn(inputClasses, "pr-10")}
             />
+
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
               aria-label={showPassword ? "Hide password" : "Show password"}
               className="absolute inset-y-0 right-0 grid w-10 place-content-center text-muted-foreground hover:text-foreground"
             >
-              {showPassword ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
+              {showPassword ? (
+                <EyeOffIcon className="size-4" />
+              ) : (
+                <EyeIcon className="size-4" />
+              )}
             </button>
           </div>
+
           {!isSignIn && (
-            <p className="text-xs text-muted-foreground">Minimum 8 characters.</p>
+            <p className="text-xs text-muted-foreground">
+              Minimum 8 characters.
+            </p>
           )}
         </div>
 
@@ -152,16 +190,22 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
         <Button
           type="submit"
           size="lg"
+          disabled={isLoading}
           className="mt-2 h-11 rounded-xl bg-brand text-[15px] font-semibold text-white hover:bg-brand/90"
         >
-          {isSignIn ? "Sign In" : "Create Account"}
+          {isLoading
+            ? "Please wait..."
+            : isSignIn
+              ? "Sign In"
+              : "Create Account"}
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         {isSignIn ? "Don't have an account?" : "Already have an account?"}{" "}
+
         <Link
-          href={isSignIn ? "/register" : "/login"}
+          href={isSignIn ? "/sign-up" : "/sign-in"}
           className="font-medium text-brand hover:underline"
         >
           {isSignIn ? "Sign Up" : "Sign In"}
