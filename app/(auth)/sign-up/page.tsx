@@ -14,7 +14,7 @@ export default function SignUpPage() {
     })
 
     if (error) {
-      console.error(error.message)
+        console.error("Signup Error:", error)
       return
     }
 
