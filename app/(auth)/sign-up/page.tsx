@@ -11,7 +11,8 @@ export default function SignUpPage() {
       email: values.email,
       password: values.password,
       callbackURL: "/",
-    })
+      role: values.role ?? "seeker",
+    } as any)
 
     if (error) {
         console.error("Signup Error:", error)

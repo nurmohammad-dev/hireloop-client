@@ -15,6 +15,7 @@ export interface AuthFormValues {
   name?: string
   email: string
   password: string
+  role?: "seeker" | "recruiter" | "admin"
 }
 
 interface AuthFormProps {
@@ -54,12 +55,19 @@ function AuthTabs({ mode }: { mode: "signin" | "signup" }) {
   )
 }
 
+const ROLE_OPTIONS = [
+  { value: "seeker", label: "Job Seeker" },
+  { value: "recruiter", label: "Recruiter" },
+  { value: "admin", label: "Admin" },
+] as const
+
 const inputClasses =
   "h-10 rounded-lg border-white/10 bg-[#0c0c0f] px-3 text-[15px] text-white focus-visible:border-brand/60 focus-visible:ring-brand/30 placeholder:text-white/40"
 
 export function AuthForm({ mode, onSubmit }: AuthFormProps) {
   const [showPassword, setShowPassword] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
+  const [selectedRole, setSelectedRole] = React.useState<"seeker" | "recruiter" | "admin">("seeker")
 
   const isSignIn = mode === "signin"
 
@@ -72,6 +80,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
       name: (formData.get("name") as string) || undefined,
       email: formData.get("email") as string,
       password: formData.get("password") as string,
+      role: selectedRole,
     }
 
     try {
@@ -179,6 +188,32 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
             </p>
           )}
         </div>
+
+        {!isSignIn && (
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="role" className="text-foreground">
+              I am a
+            </Label>
+            <div className="flex items-center gap-4">
+              {ROLE_OPTIONS.map((r) => (
+                <label
+                  key={r.value}
+                  className="flex items-center gap-2 cursor-pointer select-none"
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value={r.value}
+                    checked={selectedRole === r.value}
+                    onChange={() => setSelectedRole(r.value)}
+                    className="rounded border-brand text-brand focus:ring-brand"
+                  />
+                  {r.label}
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
 
         {isSignIn && (
           <label className="flex items-center gap-2 text-sm text-muted-foreground">
