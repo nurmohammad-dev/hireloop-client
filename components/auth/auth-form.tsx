@@ -191,26 +191,47 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
 
         {!isSignIn && (
           <div className="flex flex-col gap-2">
-            <Label htmlFor="role" className="text-foreground">
-              I am a
-            </Label>
-            <div className="flex items-center gap-4">
-              {ROLE_OPTIONS.map((r) => (
-                <label
-                  key={r.value}
-                  className="flex items-center gap-2 cursor-pointer select-none"
-                >
-                  <input
-                    type="radio"
-                    name="role"
-                    value={r.value}
-                    checked={selectedRole === r.value}
-                    onChange={() => setSelectedRole(r.value)}
-                    className="rounded border-brand text-brand focus:ring-brand"
-                  />
-                  {r.label}
-                </label>
-              ))}
+            <p className="text-sm font-medium text-foreground">
+              Joining HireLoop as
+            </p>
+            <div className="grid grid-cols-3 gap-3">
+              {ROLE_OPTIONS.map((r) => {
+                const isSelected = selectedRole === r.value;
+                return (
+                  <button
+                    key={r.value}
+                    type="button"
+                    onClick={() => setSelectedRole(r.value)}
+                    aria-pressed={isSelected}
+                    className={cn(
+                      "flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border transition-all duration-200",
+                      isSelected
+                        ? "border-brand bg-brand/10 text-brand shadow-[0_0_20px_rgba(92,83,254,0.25)]"
+                        : "border-white/10 text-muted-foreground hover:border-white/30 hover:bg-white/5"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "w-10 h-10 rounded-xl flex items-center justify-center",
+                        isSelected
+                          ? "bg-brand text-white"
+                          : "bg-white/5 text-muted-foreground"
+                      )}
+                    >
+                      {r.value === "seeker" && (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"></path></svg>
+                      )}
+                      {r.value === "recruiter" && (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                      )}
+                      {r.value === "admin" && (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      )}
+                    </div>
+                    <span className="text-sm font-medium">{r.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
