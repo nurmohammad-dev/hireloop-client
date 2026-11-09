@@ -3,8 +3,12 @@
 
 import { AuthForm, type AuthFormValues } from "@/components/auth/auth-form"
 import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
 
 export default function SignUpPage() {
+
+  const router = useRouter()
+
   const handleSignUp = async (values: AuthFormValues) => {
     const { data, error } = await authClient.signUp.email({
       name: values.name ?? "",
@@ -17,6 +21,10 @@ export default function SignUpPage() {
     if (error) {
         console.error("Signup Error:", error)
       return
+    }
+
+    if(!error) {
+      router.push('/')
     }
 
     console.log(data)

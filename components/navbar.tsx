@@ -16,6 +16,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 
+import {
+  signOut,
+  useSession,
+} from "@/lib/auth-client"
+
+import type { Session } from "@/lib/auth-client"
+
 const navLinks = [
   { label: "Browse Jobs", href: "/jobs" },
   { label: "Company", href: "/company" },
@@ -37,31 +44,71 @@ function Logo() {
   )
 }
 
-function ActionBar({ className }: { className?: string }) {
+function ActionBar({
+  className,
+  session,
+  isPending,
+}: {
+  className?: string
+  session: Session | null
+  isPending: boolean
+}) {
+  const handleSignOut = async () => {
+    await signOut()
+  }
+
+  if (isPending) {
+    return null
+  }
+
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      <Button
-        render={<Link href="/sign-in" />}
-        nativeButton={false}
-        size="lg"
-        className="h-11 rounded-xl bg-white px-5 text-[17px] font-semibold text-brand hover:bg-white/90 dark:text-brand"
-      >
-        Sign In
-      </Button>
-      <Button
-        render={<Link href="/sign-up" />}
-        nativeButton={false}
-        size="lg"
-        className="h-11 rounded-xl bg-brand px-6 text-[17px] text-white shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] hover:bg-brand/90"
-      >
-        Get Started
-      </Button>
+      {session?.user ? (
+        <>
+          <span className="text-sm font-medium text-foreground">
+            Welcome, {session.user.name}
+          </span>
+
+          <Button
+            size="lg"
+            onClick={handleSignOut}
+            className="h-11 rounded-xl"
+          >
+            Sign Out
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            render={<Link href="/sign-in" />}
+            nativeButton={false}
+            size="lg"
+            className="h-11 rounded-xl bg-white px-5 text-[17px] font-semibold text-brand hover:bg-white/90 dark:text-brand"
+          >
+            Sign In
+          </Button>
+
+          <Button
+            render={<Link href="/sign-up" />}
+            nativeButton={false}
+            size="lg"
+            className="h-11 rounded-xl bg-brand px-6 text-[17px] text-white shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] hover:bg-brand/90"
+          >
+            Get Started
+          </Button>
+        </>
+      )}
     </div>
   )
 }
 
 export function Navbar() {
   const [open, setOpen] = React.useState(false)
+
+  const {
+    data: session,
+    isPending,
+  } = useSession()
 
   return (
     <header className="sticky top-4 z-40 w-full">
@@ -85,11 +132,16 @@ export function Navbar() {
                 </Link>
               ))}
             </div>
+
             <Separator
               orientation="vertical"
               className="mx-4 h-7 w-px bg-foreground/15"
             />
-            <ActionBar />
+
+            <ActionBar
+              session={session}
+              isPending={isPending}
+            />
           </div>
 
           {/* Mobile hamburger */}
@@ -106,11 +158,19 @@ export function Navbar() {
             >
               <MenuIcon />
             </SheetTrigger>
-            <SheetContent side="right" className="bg-surface-3 gap-6 p-6">
-              <SheetTitle className="sr-only">Navigation menu</SheetTitle>
+
+            <SheetContent
+              side="right"
+              className="bg-surface-3 gap-6 p-6"
+            >
+              <SheetTitle className="sr-only">
+                Navigation menu
+              </SheetTitle>
+
               <div className="mt-4 flex items-center justify-between">
                 <Logo />
               </div>
+
               <nav className="flex flex-col">
                 {navLinks.map((link) => (
                   <Link
@@ -123,8 +183,14 @@ export function Navbar() {
                   </Link>
                 ))}
               </nav>
+
               <Separator className="bg-foreground/10" />
-              <ActionBar className="flex-col" />
+
+              <ActionBar
+                session={session}
+                isPending={isPending}
+                className="flex-col"
+              />
             </SheetContent>
           </Sheet>
         </nav>
