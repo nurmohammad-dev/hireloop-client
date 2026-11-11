@@ -20,6 +20,7 @@ import {
   CreditCard,
   Users,
   Settings,
+  PlusCircle,
 } from "lucide-react"
 
 export type MenuItem = {
@@ -44,27 +45,28 @@ const ICON_MAP: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>
 
 export const menuItemsByRole: Record<string, MenuItem[]> = {
   seeker: [
-    { id: "dashboard", name: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-    { id: "my-company", name: "My Company", url: "/dashboard/my-company", icon: Building2 },
-    { id: "manage-jobs", name: "Manage Jobs", url: "/dashboard/manage-jobs", icon: Briefcase },
-    { id: "applications", name: "Applications", url: "/dashboard/applications", icon: FileText },
-    { id: "settings", name: "Settings", url: "/dashboard/settings", icon: Settings },
+    { id: "dashboard", name: "Dashboard", url: "/dashboard/seeker", icon: LayoutDashboard },
+    { id: "my-company", name: "My Company", url: "/dashboard/seeker/my-company", icon: Building2 },
+    { id: "manage-jobs", name: "Manage Jobs", url: "/dashboard/seeker/manage-jobs", icon: Briefcase },
+    { id: "applications", name: "Applications", url: "/dashboard/seeker/applications", icon: FileText },
+    { id: "settings", name: "Settings", url: "/dashboard/seeker/settings", icon: Settings },
   ],
   recruiter: [
-    { id: "dashboard", name: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-    { id: "jobs", name: "Jobs", url: "/dashboard/jobs", icon: FileText },
-    { id: "saved-jobs", name: "Saved Jobs", url: "/dashboard/saved-jobs", icon: Bookmark },
-    { id: "applications", name: "Applications", url: "/dashboard/applications", icon: FileText },
+    { id: "dashboard", name: "Dashboard", url: "/dashboard/recruiter", icon: LayoutDashboard },
+    { id: "jobs", name: "Jobs", url: "/dashboard/recruiter/jobs", icon: FileText },
+    { id: "add-job", name: "Add Job", url: "/dashboard/recruiter/jobs/new", icon: PlusCircle },
+    { id: "saved-jobs", name: "Saved Jobs", url: "/dashboard/recruiter/saved-jobs", icon: Bookmark },
+    { id: "applications", name: "Applications", url: "/dashboard/recruiter/applications", icon: FileText },
     { id: "billing", name: "Billing", url: "/dashboard/billing", icon: CreditCard },
     { id: "settings", name: "Settings", url: "/dashboard/settings", icon: Settings },
   ],
   admin: [
-    { id: "dashboard", name: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-    { id: "users", name: "Users", url: "/dashboard/users", icon: Users },
-    { id: "companies", name: "Companies", url: "/dashboard/companies", icon: Building2 },
-    { id: "jobs", name: "Jobs", url: "/dashboard/jobs", icon: FileText },
-    { id: "payments", name: "Payments", url: "/dashboard/payments", icon: CreditCard },
-    { id: "settings", name: "Settings", url: "/dashboard/settings", icon: Settings },
+    { id: "dashboard", name: "Dashboard", url: "/dashboard/admin", icon: LayoutDashboard },
+    { id: "users", name: "Users", url: "/dashboard/admin/users", icon: Users },
+    { id: "companies", name: "Companies", url: "/dashboard/admin/companies", icon: Building2 },
+    { id: "jobs", name: "Jobs", url: "/dashboard/admin/jobs", icon: FileText },
+    { id: "payments", name: "Payments", url: "/dashboard/admin/payments", icon: CreditCard },
+    { id: "settings", name: "Settings", url: "/dashboard/admin/settings", icon: Settings },
   ],
 }
 

@@ -23,11 +23,7 @@ import {
 
 import type { Session } from "@/lib/auth-client"
 
-const navLinks = [
-  { label: "Browse Jobs", href: "/jobs" },
-  { label: "Company", href: "/company" },
-  { label: "Pricing", href: "/pricing" },
-]
+
 
 function Logo() {
   return (
@@ -109,6 +105,14 @@ export function Navbar() {
     data: session,
     isPending,
   } = useSession()
+
+const navLinks = [
+  { label: "Browse Jobs", href: "/jobs" },
+  { label: "Company", href: "/company" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Dashboard", href: `{/dashboard/${session?.user?.role || "seeker"}`},
+]
+
 
   return (
     <header className="sticky top-4 z-40 w-full">
