@@ -22,6 +22,7 @@ import {
   Settings,
   PlusCircle,
 } from "lucide-react"
+import Link from "next/link"
 
 export type MenuItem = {
   id: string
@@ -53,11 +54,10 @@ export const menuItemsByRole: Record<string, MenuItem[]> = {
   ],
   recruiter: [
     { id: "dashboard", name: "Dashboard", url: "/dashboard/recruiter", icon: LayoutDashboard },
-    { id: "jobs", name: "Jobs", url: "/dashboard/recruiter/jobs", icon: FileText },
+    { id: "my-company", name: "My Company", url: "/dashboard/recruiter/my-company", icon: Building2 },
+    { id: "manage-jobs", name: "Manage Jobs", url: "/dashboard/recruiter/manage-jobs", icon: Briefcase },
     { id: "add-job", name: "Add Job", url: "/dashboard/recruiter/jobs/new", icon: PlusCircle },
-    { id: "saved-jobs", name: "Saved Jobs", url: "/dashboard/recruiter/saved-jobs", icon: Bookmark },
     { id: "applications", name: "Applications", url: "/dashboard/recruiter/applications", icon: FileText },
-    { id: "billing", name: "Billing", url: "/dashboard/billing", icon: CreditCard },
     { id: "settings", name: "Settings", url: "/dashboard/settings", icon: Settings },
   ],
   admin: [
@@ -85,7 +85,7 @@ export function DashboardSidebar() {
           <SidebarMenu>
             {items.map((item) => (
               <SidebarMenuItem key={item.id}>
-                <SidebarMenuButton render={<a href={item.url} />}>
+                <SidebarMenuButton render={<Link href={item.url} />}>
                   <item.icon />
                   <span>{item.name}</span>
                 </SidebarMenuButton>
