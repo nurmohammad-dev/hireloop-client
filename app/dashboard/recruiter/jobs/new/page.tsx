@@ -96,9 +96,7 @@ export default function NewJobPage() {
               networks.
             </p>
           </div>
-          <Button type="submit" form="new-job-form">
-            Publish Job <ArrowRight className="size-4" />
-          </Button>
+        
         </div>
 
         {/* Form */}
@@ -289,6 +287,9 @@ export default function NewJobPage() {
               />
             </div>
           </section>
+            <Button type="submit" form="new-job-form">
+            Publish Job <ArrowRight className="size-4" />
+          </Button>
         </form>
       </div>
     </div>
