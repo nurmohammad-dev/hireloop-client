@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { ArrowLeft, Briefcase, Building, MapPin, DollarSign, FileText } from "lucide-react"
+import { ArrowLeft, Briefcase } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,20 +12,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 
 export default function NewJobPage() {
-  const [formData, setFormData] = React.useState({
-    title: "",
-    company: "",
-    description: "",
-    location: "",
-    jobType: "full-time",
-    category: "",
-    salary: "",
-  })
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    const data = Object.fromEntries(formData.entries())
+    const data = Object.fromEntries(new FormData(event.currentTarget).entries())
     console.log("New Job Form Data:", data)
     // TODO: Integrate with API later
   }
