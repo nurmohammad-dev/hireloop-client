@@ -17,6 +17,7 @@ import { Select, SelectGroup, SelectItem } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import { CreateJob } from "@/lib/actions/jobs"
 
 const JOB_TYPES = [
   { value: "full-time", label: "Full-time" },
@@ -65,11 +66,15 @@ function IconInput({ icon, className, ...props }: React.ComponentProps<"input"> 
 export default function NewJobPage() {
   const [remoteAllowed, setRemoteAllowed] = React.useState(false)
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit =async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const data = Object.fromEntries(new FormData(event.currentTarget).entries())
+    const formData = new FormData(event.currentTarget)
+    const data = Object.fromEntries(formData.entries())
     console.log("New Job Form Data:", data)
+
     // TODO: Integrate with API later
+    const result =await CreateJob(data)
+    console.log("API Response:", result)
   }
 
   return (
