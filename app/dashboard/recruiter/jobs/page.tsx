@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "next/link"
 import { Ellipsis, Pencil, Plus, Users } from "lucide-react"
 
@@ -14,20 +12,18 @@ import {
 } from "@/components/ui/table"
 import {
   CATEGORY_LABELS,
-  CATEGORY_META,
-  MOCK_JOBS,
   formatCompensation,
   formatDeadline,
   formatJobType,
   formatLocation,
   formatPostedAgo,
+  getCategoryMeta,
   type JobPost,
 } from "@/lib/jobs"
-
-const table = MOCK_JOBS
+import { getJobs } from "@/lib/api/jobs"
 
 function StatusBadge({ status }: { status: JobPost["status"] }) {
-  const active = status === "active"
+  const active = status.toLowerCase() === "active"
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${
@@ -37,7 +33,7 @@ function StatusBadge({ status }: { status: JobPost["status"] }) {
       }`}
     >
       <span className={`size-1.5 rounded-full ${active ? "bg-emerald-400" : "bg-muted-foreground"}`} />
-      {active ? "Active" : "Expired"}
+      {status}
     </span>
   )
 }
@@ -50,7 +46,9 @@ function TypeBadge({ jobType }: { jobType: JobPost["jobType"] }) {
   )
 }
 
-export default function ManageJobsPage() {
+export default async function ManageJobsPage() {
+  const jobs: JobPost[] = await getJobs()
+  console.log("jobs", jobs)
   return (
     <div className="flex flex-col">
       <div className="w-full px-4 py-8 sm:px-6 lg:px-8">
@@ -96,11 +94,11 @@ export default function ManageJobsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {table.map((job) => {
-                const meta = CATEGORY_META[job.category]
+              {jobs.map((job) => {
+                const meta = getCategoryMeta(job.category)
                 const Icon = meta.icon
                 return (
-                  <TableRow key={job.id}>
+                  <TableRow key={job._id ?? job.id}>
                     {/* Job Title & Dept */}
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -114,7 +112,7 @@ export default function ManageJobsPage() {
                             {job.title}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {CATEGORY_LABELS[job.category]}
+                            {CATEGORY_LABELS[job.category] ?? job.category}
                           </p>
                         </div>
                       </div>

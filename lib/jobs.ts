@@ -11,16 +11,6 @@ import {
 } from "lucide-react"
 
 export type JobType = "full-time" | "part-time" | "contract" | "internship"
-export type JobCategory =
-  | "engineering"
-  | "design"
-  | "marketing"
-  | "product"
-  | "data"
-  | "operations"
-export type JobFrequency = "hour" | "day" | "month" | "year"
-export type JobStatus = "active" | "expired"
-
 /**
  * A job post — fields mirror what the "Post a New Job" form collects
  * (title, company, category, jobType, remote, location, salary range,
@@ -28,26 +18,27 @@ export type JobStatus = "active" | "expired"
  * manage-table fields (id, applicants, status, postedAt).
  */
 export type JobPost = {
-  id: string
+  id?: string
+  _id?: string // Mongo id from the API
   title: string
   company: string
-  category: JobCategory
-  jobType: JobType
+  category: string // free-form from the API ("IT", "Design", ...)
+  jobType: string // "full-time" or "Full-time"
   remote: boolean
   location: string
   minSalary: string
   maxSalary: string
-  frequency: JobFrequency
+  frequency: string // "hour" or "Monthly"
   deadline: string // yyyy-mm-dd
   responsibilities: string
   qualifications: string
   // manage table fields
   applicants: number
-  status: JobStatus
+  status: string // "active", "Active", "Pending", ...
   postedAt: string // yyyy-mm-dd
 }
 
-export const CATEGORY_LABELS: Record<JobCategory, string> = {
+export const CATEGORY_LABELS: Record<string, string> = {
   engineering: "Engineering",
   design: "Design",
   marketing: "Marketing",
@@ -56,7 +47,13 @@ export const CATEGORY_LABELS: Record<JobCategory, string> = {
   operations: "Operations",
 }
 
-export const CATEGORY_META: Record<JobCategory, { icon: LucideIcon; className: string }> = {
+const FALLBACK_CATEGORY_META = { icon: Boxes, className: "bg-muted text-muted-foreground" }
+
+export function getCategoryMeta(category: string) {
+  return CATEGORY_META[category] ?? FALLBACK_CATEGORY_META
+}
+
+export const CATEGORY_META: Record<string, { icon: LucideIcon; className: string }> = {
   engineering: { icon: Code, className: "bg-sky-500/10 text-sky-400" },
   design: { icon: Palette, className: "bg-orange-500/10 text-orange-400" },
   marketing: { icon: Megaphone, className: "bg-purple-500/10 text-purple-400" },
@@ -65,7 +62,7 @@ export const CATEGORY_META: Record<JobCategory, { icon: LucideIcon; className: s
   operations: { icon: Settings2, className: "bg-amber-500/10 text-amber-400" },
 }
 
-const FREQ_SHORT: Record<JobFrequency, string> = {
+const FREQ_SHORT: Record<string, string> = {
   hour: "hr",
   day: "day",
   month: "mo",
@@ -75,10 +72,11 @@ const FREQ_SHORT: Record<JobFrequency, string> = {
 export function formatCompensation(
   job: Pick<JobPost, "minSalary" | "maxSalary" | "frequency">
 ) {
-  return `${job.minSalary} - ${job.maxSalary} /${FREQ_SHORT[job.frequency]}`
+  const unit = FREQ_SHORT[job.frequency.toLowerCase()] ?? job.frequency.toLowerCase()
+  return `${job.minSalary} - ${job.maxSalary} /${unit}`
 }
 
-export function formatJobType(jobType: JobType) {
+export function formatJobType(jobType: string) {
   return jobType.charAt(0).toUpperCase() + jobType.slice(1)
 }
 
