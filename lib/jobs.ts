@@ -72,8 +72,8 @@ const FREQ_SHORT: Record<string, string> = {
 export function formatCompensation(
   job: Pick<JobPost, "minSalary" | "maxSalary" | "frequency">
 ) {
-  const unit = FREQ_SHORT[job.frequency.toLowerCase()] ?? job.frequency.toLowerCase()
-  return `${job.minSalary} - ${job.maxSalary} /${unit}`
+  const unit = FREQ_SHORT[(job.frequency ?? "").toLowerCase()] ?? (job.frequency ?? "").toLowerCase()
+  return `${job.minSalary ?? "—"} - ${job.maxSalary ?? "—"} /${unit}`
 }
 
 export function formatJobType(jobType: string) {
@@ -85,7 +85,9 @@ export function formatLocation(job: Pick<JobPost, "remote" | "location">) {
 }
 
 export function formatDeadline(iso: string) {
-  return new Date(`${iso}T00:00:00`).toLocaleDateString("en-US", {
+  const date = iso ? new Date(`${iso}T00:00:00`) : null
+  if (!date || Number.isNaN(date.getTime())) return "—"
+  return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -93,7 +95,9 @@ export function formatDeadline(iso: string) {
 }
 
 export function formatPostedAgo(iso: string) {
-  const days = Math.max(1, Math.round(Math.abs(Date.now() - new Date(`${iso}T00:00:00`).getTime()) / 86_400_000))
+  const time = iso ? new Date(`${iso}T00:00:00`).getTime() : Number.NaN
+  if (Number.isNaN(time)) return "—"
+  const days = Math.max(1, Math.round(Math.abs(Date.now() - time) / 86_400_000))
   const span = days >= 30 ? `${Math.round(days / 30)}mo` : days >= 7 ? `${Math.round(days / 7)}w` : `${days}d`
   return `Posted ${span} ago`
 }

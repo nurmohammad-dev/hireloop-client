@@ -21,9 +21,10 @@ import {
   type JobPost,
 } from "@/lib/jobs"
 import { getJobs } from "@/lib/api/jobs"
+import { DeleteJobDialog } from "@/app/components/DeleteJobDialog"
 
 function StatusBadge({ status }: { status: JobPost["status"] }) {
-  const active = status.toLowerCase() === "active"
+  const active = (status ?? "").toLowerCase() === "active"
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${
@@ -33,7 +34,7 @@ function StatusBadge({ status }: { status: JobPost["status"] }) {
       }`}
     >
       <span className={`size-1.5 rounded-full ${active ? "bg-emerald-400" : "bg-muted-foreground"}`} />
-      {status}
+      {status || "Unknown"}
     </span>
   )
 }
@@ -140,7 +141,7 @@ export default async function ManageJobsPage() {
                     <TableCell>
                       <span className="inline-flex items-center gap-1.5 text-sm whitespace-nowrap text-foreground">
                         <Users className="size-4 text-brand" />
-                        {job.applicants} Candidates
+                        {job.applicants ?? 0} Candidates
                       </span>
                     </TableCell>
 
@@ -167,16 +168,10 @@ export default async function ManageJobsPage() {
                           size="sm"
                           className="border-brand/40 text-brand hover:bg-brand/10 hover:text-brand"
                         >
-                          <Pencil className="size-3.5" /> Update
+                          <Pencil className="size-3.5" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-8 text-muted-foreground"
-                          aria-label="More actions"
-                        >
-                          <Ellipsis className="size-4" />
-                        </Button>
+                        <DeleteJobDialog jobId={job._id ?? job.id ?? ""} />
+                       
                       </div>
                     </TableCell>
                   </TableRow>

@@ -18,6 +18,8 @@ import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { CreateJob } from "@/lib/actions/jobs"
+import { toast } from "@/components/ui/toast"
+import { useRouter } from "next/navigation"
 
 const JOB_TYPES = [
   { value: "full-time", label: "Full-time" },
@@ -66,6 +68,8 @@ function IconInput({ icon, className, ...props }: React.ComponentProps<"input"> 
 export default function NewJobPage() {
   const [remoteAllowed, setRemoteAllowed] = React.useState(false)
 
+  const router = useRouter()
+
   const handleSubmit =async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
@@ -74,7 +78,14 @@ export default function NewJobPage() {
 
     // TODO: Integrate with API later
     const result =await CreateJob(data)
-    console.log("API Response:", result)
+    if(result.insertedId) {
+      console.log("API Response:", result)
+      toast.add ({
+        title: "Job Created",
+        description: "The job has been successfully created.",
+      })
+      router.push("/dashboard/recruiter/jobs")
+    }
   }
 
   return (
